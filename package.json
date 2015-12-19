@@ -1,0 +1,24 @@
+{
+  "name": "FactoryInc",
+  "main": "main.html",
+  "version": "0.1.0",
+  "window": {
+    "title": "FactoryInc",
+    "toolbar": true,
+    "frame": true,
+    "width": 1280,
+    "height": 800,
+    "min_width": 500,
+    "min_height": 200,
+    "position": "center",
+    "resizable": false
+  },
+  "devDependencies": {
+    "del": "^2.1.0",
+    "gulp": "latest",
+    "gulp-nw-builder": "latest"
+  },
+  "dependencies": {
+    "jquery": "^2.1.4"
+  }
+}
