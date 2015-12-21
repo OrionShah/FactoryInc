@@ -1,71 +1,48 @@
-var canvas = CE.defines("canvas_id")
-	.extend(Input)
-	.ready(function() { 
-		canvas.Scene.call('Factory', {params: {'id': 1}});
-	});
+var Backbone = require('backbone');
+// var _ = require('underscore');
+var Konva = require('konva');
 
-
-canvas.Scene.New({
-	name: "Factory",
-	timer: 0,
-	materials: {
-        // Usually put relatives links
-		images: {
-            // For CanvasEngine load "bar" first, we add index property
-            "bar": {path: "http://rsamaium.github.io/CanvasEngine/samples/preload/images/bar_full.jpg", index: 0},
-            "person": {path: "Person.png"},
-		},
-		fonts: {
-            google: {
-                families: ['Droid Sans']
-            }
+var GUI_View = Backbone.View.extend({
+    initialize: function (params) {
+        this.layer = params.layer;
+    },
+    el: function () {
+        var group = new Konva.Group();
+        var imageObj = new Image();
+        imageObj.src = 'Person.png';
+        imageObj.onload = function() {
+            var player = new Konva.Image({
+                id: "player",
+                x: 100,
+                y: 100,
+                image: imageObj,
+                width: 100,
+                height: 100
+            });
+            group.add(player);
         }
-	},
-	called: function(stage) {
-		this.el = this.createElement();
-		stage.append(this.el);
-	},
-	preload: function(stage, pourcent, material) {
-		console.log(pourcent);
-		// this.el.drawImage("bar", 0, 0, pourcent + "%");
-	},
-	ready: function(stage, params) {
-	    this.element = this.createElement();
-	    this.element.drawImage("person", 0, 0, 250, 250);
-	    stage.append(this.element);
-	    console.log(this.element);
-	    canvas.Input.keyDown(Input.Right);
-	    canvas.Input.keyUp(Input.Right);
-	    canvas.Input.keyDown(Input.Left);
-	    canvas.Input.keyUp(Input.Left);
-	},
-	render: function(stage) {
-		// var time = new Date();
-		// var el = this.createElement();
-  //       el.font = '40pt "Droid Sans"';
-  //       el.fillStyle = 'black';
-  //       el.fillText(this.timeFormat(time.getHours()) + ":" + this.timeFormat(time.getMinutes()) + ":" + this.timeFormat(time.getSeconds()) + "---" + (time.getTimezoneOffset()/60), 50, 50);
-  //       stage.append(el);
-        // stage.empty();
-        speed = 3;
-        if (canvas.Input.isPressed(Input.Right)) {
-        	this.element.scaleTo(1,0.1);
-        	this.element.x = this.element.x+speed;
-        }
-        if (canvas.Input.isPressed(Input.Left)) {
-        	this.element.scaleTo(1,1);
-        	this.element.x = this.element.x-speed;
-        }
-		stage.refresh();
-	},
-	exit: function(stage) {
-		console.log('exit');
-	},
-
-	timeFormat: function (time) {
-		if (time < 10) {
-			return '0'+time;
-		}
-		return time;
-	}
+        
+        console.log(group);
+        return group;
+    },
+    render: function () {
+        console.log('render');
+        this.layer.add(this.el);
+        this.layer.draw();
+    },
 });
+
+
+var stage = new Konva.Stage({
+    container: 'game_view',
+    width: 1000,
+    height: 700,
+    // width: ($('body').width()-10),
+    // height: ($(document).height()-20)
+});
+
+var layer = new Konva.Layer();
+stage.add(layer);
+
+gui = new GUI_View({layer: layer});
+gui.render();
