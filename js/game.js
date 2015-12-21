@@ -1,32 +1,54 @@
-var Backbone = require('backbone');
-// var _ = require('underscore');
-var Konva = require('konva');
-
-var GUI_View = Backbone.View.extend({
+var GUI_View = Backbone.KonvaView.extend({
     initialize: function (params) {
         this.layer = params.layer;
+        this.init_el();
     },
-    el: function () {
+    events: {
+    	'keypress': 'keyAction',
+    	'click': "keyAction"
+    },
+    keyAction: function (e)  {
+    	console.log(e);
+    },
+    init_el: function () {
         var group = new Konva.Group();
         var imageObj = new Image();
-        imageObj.src = 'Person.png';
+        var player;
         imageObj.onload = function() {
-            var player = new Konva.Image({
+            player = new Konva.Image({
                 id: "player",
                 x: 100,
                 y: 100,
                 image: imageObj,
-                width: 100,
-                height: 100
+                width: 300,
+                height: 300
             });
-            group.add(player);
+        	console.log(player);
+        	group.add(player);
         }
+        imageObj.src = "Person.png";
         
-        console.log(group);
+        var rect = new Konva.Rect({
+          	x : 100,
+          	y : 100,
+          	width : 50,
+          	height : 50,
+          	fill : 'green',
+          	id : 'rect'
+        });
+        // group.add(rect);
+        // console.log(group);
+        this.el = group;
         return group;
     },
     render: function () {
-        console.log('render');
+    	var self = this;
+    	window.onkeypress = function (e) {
+			player = stage.findOne('#player');
+			player.attrs.x++;
+			console.log(self.el);
+		}
+
         this.layer.add(this.el);
         this.layer.draw();
     },
@@ -35,10 +57,10 @@ var GUI_View = Backbone.View.extend({
 
 var stage = new Konva.Stage({
     container: 'game_view',
-    width: 1000,
-    height: 700,
-    // width: ($('body').width()-10),
-    // height: ($(document).height()-20)
+    // width: 1000,
+    // height: 700,
+    width:  window.innerWidth-20,
+    height: window.innerHeight-20
 });
 
 var layer = new Konva.Layer();
@@ -46,3 +68,12 @@ stage.add(layer);
 
 gui = new GUI_View({layer: layer});
 gui.render();
+
+setInterval(function () {
+	gui.render();
+	// console.log('render');
+}, 20);
+
+window.onkeypress = function (e) {
+	console.log(e.keyCode);
+}
