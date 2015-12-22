@@ -1,7 +1,21 @@
+timer_for_fps = 0;
+
+var fps_model = Backbone.Model.extend({
+    id: 'timer',
+    fps: 0,
+    screens: 0,
+    calc: function () {
+        this.fps = this.screens / 0.1;
+        this.screens = 0;
+        // console.log(this.fps);
+    }
+});
 var GUI_View = Backbone.KonvaView.extend({
+    fps_timer: 123213,
     initialize: function (params) {
         this.layer = params.layer;
-        this.init_el();
+        this.fps_timer = params.fps_timer;
+        console.log(this.fps_timer);
     },
     events: {
     	'keypress': 'keyAction',
@@ -10,10 +24,12 @@ var GUI_View = Backbone.KonvaView.extend({
     keyAction: function (e)  {
     	console.log(e);
     },
-    init_el: function () {
+    g: function () {
         var group = new Konva.Group();
         var imageObj = new Image();
         var player;
+        var self = this;
+        console.log(self.fps_timer);
         imageObj.onload = function() {
             player = new Konva.Image({
                 id: "player",
@@ -23,7 +39,6 @@ var GUI_View = Backbone.KonvaView.extend({
                 width: 300,
                 height: 300
             });
-        	console.log(player);
         	group.add(player);
         }
         imageObj.src = "Person.png";
@@ -36,20 +51,22 @@ var GUI_View = Backbone.KonvaView.extend({
           	fill : 'green',
           	id : 'rect'
         });
+        var fps_text = new Konva.Text({
+            x: 20,
+            y: 20,
+            text: 'sadsf',
+            fontSize: 30,
+            fontFamily: 'Calibri',
+            fill: 'green'
+        });
+        group.add(fps_text);
         // group.add(rect);
         // console.log(group);
-        this.el = group;
         return group;
     },
     render: function () {
-    	var self = this;
-    	window.onkeypress = function (e) {
-			player = stage.findOne('#player');
-			player.attrs.x++;
-			console.log(self.el);
-		}
-
-        this.layer.add(this.el);
+        console.log(this);
+        this.layer.add(this.g);
         this.layer.draw();
     },
 });
@@ -66,14 +83,16 @@ var stage = new Konva.Stage({
 var layer = new Konva.Layer();
 stage.add(layer);
 
-gui = new GUI_View({layer: layer});
+fps = new fps_model();
+gui = new GUI_View({layer: layer, fps_timer: fps});
 gui.render();
-
 setInterval(function () {
-	gui.render();
-	// console.log('render');
+    // gui.render();
+    // fps.screens++;
+    // console.log('render');
 }, 20);
 
-window.onkeypress = function (e) {
-	console.log(e.keyCode);
-}
+
+setInterval(function () {
+    fps.calc();
+}, 100);
