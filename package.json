@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "createjs": "0.0.0",
+    "file-url": "^1.0.1",
     "jquery": "^2.1.4",
     "underscore": "^1.8.3"
   }
