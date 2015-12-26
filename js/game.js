@@ -58,8 +58,11 @@ function load_res () {
 function updater () {
     system_gui.text_fps.set({text: createjs.Ticker.getFPS()});
     // objects.circle.x += 10;
-    if (objects.circle.x > stage.canvas.width) {
-        objects.circle.x = 0;
+    if (objects.circle.x > (stage.canvas.width - 50)) {
+        objects.circle.x = 50;
+    }
+    if (objects.circle1.x > (stage.canvas.width - 50)) {
+        objects.circle1.x = 50;
     }
     stage.update();
 }
@@ -68,7 +71,7 @@ function create_button (name, x, y, w, h) {
     var new_btn = new createjs.Rectangle(x, y, w, h);
     new_btn.type = 'btn';
     console.log('3');
-    stage.addChild(new_btn);
+    // stage.addChild(new_btn);
     objects.push(new_btn);
 }
 
