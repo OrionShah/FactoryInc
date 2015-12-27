@@ -6,72 +6,89 @@ var res_paths = [
     {id: "space", src: "http://upload.wikimedia.org/wikipedia/commons/a/a2/Polycyclic_Aromatic_Hydrocarbons_In_Space.jpg"}
 ];
 
-textures = {};
-system_gui = [];
-objects = [];
-var stage = null;
-function init () {
-    load_res();
-    createjs.Ticker.setFPS(60);
-    stage = new createjs.Stage('canvas_id');
+var game = function () {
+    var self = this;
+    self.textures = {};
+    self.system_gui = [];
+    self.objects = [];
+    self.stage = null;
+    self.init = function () {
+        self.load_res();
+        createjs.Ticker.setFPS(60);
+        self.stage = new createjs.Stage('canvas_id');
 
-    var circle = new createjs.Shape();
-    circle.graphics.beginFill('DeepSkyBlue').drawCircle(0, 0, 50);
-    circle.type = 'circle';
-    circle.name = '1';
-    circle.x = 100;
-    circle.y = 100;
-    objects['circle'] = circle;
-    stage.addChild(circle);
+        var circle = new createjs.Shape();
+        circle.graphics.beginFill('DeepSkyBlue').drawCircle(0, 0, 50);
+        circle.type = 'circle';
+        circle.name = '1';
+        circle.x = 100;
+        circle.y = 100;
+        self.objects['circle'] = circle;
+        self.stage.addChild(circle);
 
-    var circle1 = new createjs.Shape();
-    circle1.graphics.beginFill('green').drawCircle(0, 0, 50);
-    circle1.name = '2';
-    circle1.type = 'circle';
-    circle1.x = 300;
-    circle1.y = 500;
-    objects['circle1'] = circle1;
-    stage.addChild(circle1);
+        var circle1 = new createjs.Shape();
+        circle1.graphics.beginFill('green').drawCircle(0, 0, 50);
+        circle1.name = '2';
+        circle1.type = 'circle';
+        circle1.x = 300;
+        circle1.y = 500;
+        self.objects['circle1'] = circle1;
+        self.stage.addChild(circle1);
 
-    var text_fps = new createjs.Text(createjs.Ticker.getMeasuredFPS(), "20pt Arial", "#000");
-    text_fps.x = 15;
-    system_gui['text_fps'] = text_fps;
-    stage.addChild(text_fps);
-    // console.log(createjs.EaselJS.version);
-    
-    console.log('1');
-    create_button(10, 10, 300, 50);
-    console.log('2');
+        var text_fps = new createjs.Text(createjs.Ticker.getMeasuredFPS(), "20pt Arial", "#000");
+        text_fps.x = 15;
+        self.system_gui['text_fps'] = text_fps;
+        self.stage.addChild(text_fps);
+        // console.log(createjs.EaselJS.version);
 
-    stage.addEventListener('click', function (e) {
-        e.target.x += 50;
-        console.log(e.target.type);
-    });
-    createjs.Ticker.addEventListener("tick", updater);
-    // stage.update();
-}
+        console.log('1');
+        self.create_button('test', 10, 50, 300, 50);
+        console.log('2');
 
-function load_res () {
+        self.stage.addEventListener('click', function (e) {
+            if (e.target.type == "circle") {
+                e.target.x += 100;
+            }
+            if (e.target.type == "btn") {
+                self.btn_event(e.target);
+            }
+            console.log(e.target.type);
+        });
+        createjs.Ticker.addEventListener("tick", self.updater);
+        // stage.update();
+    };
 
-}
+    self.load_res = function () {
 
-function updater () {
-    system_gui.text_fps.set({text: createjs.Ticker.getFPS()});
-    // objects.circle.x += 10;
-    if (objects.circle.x > (stage.canvas.width - 50)) {
-        objects.circle.x = 50;
-    }
-    if (objects.circle1.x > (stage.canvas.width - 50)) {
-        objects.circle1.x = 50;
-    }
-    stage.update();
-}
+    };
 
-function create_button (name, x, y, w, h) {
-    var new_btn = new createjs.Rectangle(x, y, w, h);
-    new_btn.type = 'btn';
-    console.log('3');
-    // stage.addChild(new_btn);
-    objects.push(new_btn);
-}
+    self.updater = function () {
+        self.system_gui.text_fps.set({text: createjs.Ticker.getFPS()});
+        self.objects.circle1.x+=10;
+        // objects.circle.x += 10;
+        if (self.objects.circle.x > (self.stage.canvas.width - 40)) {
+            self.objects.circle.x = 40;
+        }
+        if (self.objects.circle1.x > (self.stage.canvas.width - 40)) {
+            self.objects.circle1.x = 40;
+        }
+        self.stage.update();
+    };
 
+    self.create_button = function (name, x, y, w, h) {
+        var new_btn = new createjs.Shape();
+        // var new_btn = new createjs.ButtonHelper(myInstance, 'out', 'over', 'down', false, myInstance, 'text');
+        new_btn.name = name;
+        new_btn.type = 'btn';
+        new_btn.graphics.beginFill('green').drawRect(x, y, w, h);
+        console.log('3');
+        console.log(new_btn.graphics);
+        self.stage.addChild(new_btn);
+        self.objects.push(new_btn);
+    };
+    self.btn_event = function (target) {
+        console.log(target);
+    };
+};
+
+gameObj = new game();
