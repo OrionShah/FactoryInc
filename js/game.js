@@ -1,4 +1,3 @@
-var path_url = require('file-url');
 var fs = require('fs');
 
 var res_paths = [
@@ -41,18 +40,19 @@ var game = function () {
         self.stage.addChild(text_fps);
         // console.log(createjs.EaselJS.version);
 
-        console.log('1');
-        self.create_button('test', 10, 50, 300, 50);
-        console.log('2');
+        self.create_button('Button!', 10, 50, 300, 50, {size: "30", font: "Arial"}, "green", "black");
 
         self.stage.addEventListener('click', function (e) {
             if (e.target.type == "circle") {
                 e.target.x += 100;
             }
+            if (e.target.parent.type == "btn") {
+                // self.btn_event(e.target);
+            }
             if (e.target.type == "btn") {
                 self.btn_event(e.target);
             }
-            console.log(e.target.type);
+            // console.log(e.target);
         });
         createjs.Ticker.addEventListener("tick", self.updater);
         // stage.update();
@@ -63,7 +63,7 @@ var game = function () {
     };
 
     self.updater = function () {
-        self.system_gui.text_fps.set({text: createjs.Ticker.getFPS()});
+        self.system_gui.text_fps.set({text: createjs.Ticker.getFPS().toFixed(1)});
         self.objects.circle1.x+=10;
         // objects.circle.x += 10;
         if (self.objects.circle.x > (self.stage.canvas.width - 40)) {
@@ -75,20 +75,39 @@ var game = function () {
         self.stage.update();
     };
 
-    self.create_button = function (name, x, y, w, h) {
-        var new_btn = new createjs.Shape();
-        // var new_btn = new createjs.ButtonHelper(myInstance, 'out', 'over', 'down', false, myInstance, 'text');
-        new_btn.name = name;
+    self.create_button = function (text_str, x, y, w, h, text_props, color, stroke) {
+        var new_btn = new createjs.Container();
+        new_btn.name = text_str;
         new_btn.type = 'btn';
-        new_btn.graphics.beginFill('green').drawRect(x, y, w, h);
-        console.log('3');
-        console.log(new_btn.graphics);
+
+        var background = new createjs.Shape();
+        background.graphics.beginFill(color).drawRect(x, y, w, h);
+        background.type="bgrnd";
+
+        font_settings = text_props.size + "px " + text_props.font;
+        var text = new createjs.Text(text_str, font_settings, "#000");
+        text.textAlign = "center";
+        text.x = x+w/2;
+        text.y = y+(h/2) - (text_props.size/2);
+        text.type="txt";
+
+        var glass = new createjs.Shape();
+        glass.graphics.beginFill('rgba(0,0,0,0.1)').beginStroke(stroke).drawRect(x, y, w, h);
+        glass.name = text_str;
+        glass.type = 'btn';
+
+        new_btn.addChild(background);
+        new_btn.addChild(text);
+        new_btn.addChild(glass);
+
         self.stage.addChild(new_btn);
         self.objects.push(new_btn);
     };
     self.btn_event = function (target) {
-        console.log(target);
+        target.parent.x += 100;
+        
     };
 };
 
 gameObj = new game();
+game();

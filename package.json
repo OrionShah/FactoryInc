@@ -16,7 +16,8 @@
   "devDependencies": {
     "del": "^2.1.0",
     "gulp": "latest",
-    "gulp-nw-builder": "latest"
+    "gulp-nw-builder": "latest",
+    "nw-builder": "^2.2.0"
   },
   "dependencies": {
     "createjs": "0.0.0",

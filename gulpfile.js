@@ -9,12 +9,13 @@ gulp.task('nw', function () {
 		'./js/*',
 		'./styles/*',
 		'./node_modules/jquery/**',
+		'./node_modules/underscore/*'
 	];
 	var nw = new builder({
 		version: 'v0.12.3',
 	    files: src_path,
-	    platforms: ['win64'],
-	    // platforms: ['linux64'],
+	    // platforms: ['win64'],
+	    platforms: ['linux64'],
 	    cacheDir: 'cache',
 	    buildDir: 'build'
 	});
