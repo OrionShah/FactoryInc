@@ -2,15 +2,11 @@ var fs = require('fs');
 var path = require('path');
 // var process = require('process');
 
-var res_paths = [
-    {id: "char", src: 'Person.png'},
-    {id: "space", src: "http://upload.wikimedia.org/wikipedia/commons/a/a2/Polycyclic_Aromatic_Hydrocarbons_In_Space.jpg"}
-];
 
 var game = function () {
     var self = this;
     self.render = null;
-    game_path = null;
+    self.game_path = null;
     self.init = function () {
         self.render = new render();
         self.render.init();
@@ -19,12 +15,21 @@ var game = function () {
     };
 
     self.getProcessPath = function () {
-        var path;
-        console.log(process.cwd());
+        var path_dir = process.cwd();
+        var paths = path_dir.split(path.sep);
+        if (paths[paths.length-1] !== "FactoryInc") {
+            path_dir = path.dirname(process.execPath);
+        }
+        return path_dir;
+    };
 
-        return parh;
-    }
+    self.bytesToSize = function (bytes) {
+       var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+       if (bytes == 0) return '0 Byte';
+       var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+       return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+    };
 };
 
-gameObj = new game();
+var gameObj = new game();
 // game();

@@ -1,4 +1,4 @@
-
+var _ = require('underscore');
 
 var render = function () {
     var self = this;
@@ -8,8 +8,9 @@ var render = function () {
     self.stage = null;
 
     self.init = function () {
-        createjs.Ticker.setFPS(60);
+        createjs.Ticker.setFPS(30);
         self.stage = new createjs.Stage('canvas_id');
+        self.initSystemLabel();
 
         var circle = new createjs.Shape();
         circle.graphics.beginFill('DeepSkyBlue').drawCircle(0, 0, 50);
@@ -29,14 +30,6 @@ var render = function () {
         self.objects.push(circle1);
         self.stage.addChild(circle1);
 
-        var text_fps = new createjs.Text(createjs.Ticker.getMeasuredFPS(), "20pt Arial", "#000");
-        text_fps.x = 15;
-        text_fps.name = 'fps';
-        text_fps.update = function () {
-            this.set({text: createjs.Ticker.getFPS().toFixed(1)});
-        }
-        self.system_gui.push(text_fps);
-        self.stage.addChild(text_fps);
         // console.log(createjs.EaselJS.version);
         
         self.create_button({
@@ -78,11 +71,33 @@ var render = function () {
             }
         });
 
+        var data = {
+            images: ["btn.png"],
+            framerate: 1,
+            frames: {width:32*15, height:32*15},
+            animations: {
+                out: 0,
+                over: 1,
+                down: 2,
+                hit: 0
+            }
+        };
+        var spriteSheet = new createjs.SpriteSheet(data);
+        var Sprite = new createjs.Sprite(spriteSheet);
+
+        var helper = new createjs.ButtonHelper(Sprite, "out", "over", "down", false, Sprite, "hit");
+        // var animation = new createjs.Sprite(spriteSheet, "gen");
+        // 
+        self.stage.addChild(Sprite);
+        // self.stage.addChild(helper);
+
+
+
         self.stage.addEventListener('click', function (e) {
-            if (e.target.type == "circle") {
+            if (e.target.type === "circle") {
                 e.target.x += 100;
             }
-            if (e.target.type == "btn") {
+            if (e.target.type === "btn") {
                 self.btn_event(e.target);
             }
             // console.log(e.target);
@@ -92,7 +107,7 @@ var render = function () {
 
     self.updater = function () {
         _.each(self.system_gui, function (el) {
-            if (el.name == 'fps') {
+            if (el.name === 'fps') {
                 el.update();
             }
         });
@@ -117,7 +132,7 @@ var render = function () {
         background.graphics.beginFill(button.color).drawRect(button.x, button.y, button.w, button.h);
         background.type="bgrnd";
 
-        font_settings = button.size + "px " + button.font;
+        var font_settings = button.size + "px " + button.font;
         var text = new createjs.Text(button.text_str, font_settings, "#000");
         text.textAlign = "center";
         text.x = button.x+button.w/2;
@@ -125,7 +140,9 @@ var render = function () {
         text.type="txt";
 
         var glass = new createjs.Shape();
-        glass.graphics.beginFill('rgba(0,0,0,0.1)').beginStroke(button.stroke).drawRect(button.x, button.y, button.w, button.h);
+        glass.graphics.beginFill('rgba(0,0,0,0.1)')
+            .beginStroke(button.stroke)
+            .drawRect(button.x, button.y, button.w, button.h);
         glass.name = button.name;
         glass.type = 'btn';
         glass.click_event = button.click_event;
@@ -145,5 +162,21 @@ var render = function () {
         // self.stage.getChildAt(1).x += 100;
         // console.log(self.stage.getChildAt(1));
         
+    };
+
+    self.initSystemLabel = function () {
+        var text_fps = new createjs.Text(createjs.Ticker.getMeasuredFPS(), "20px Arial", "#000");
+        text_fps.x = 15;
+        text_fps.name = 'fps';
+        text_fps.update = function () {
+            var str = "FPS: " + createjs.Ticker.getFPS().toFixed(1) +
+                "| workDir: " + gameObj.game_path +
+                "| CreateJS v. " + createjs.EaselJS.version +
+                "| Memory: " + gameObj.bytesToSize(process.memoryUsage().rss);
+            this.set({text: str});
+        };
+
+        self.system_gui.push(text_fps);
+        self.stage.addChild(text_fps);
     };
 };

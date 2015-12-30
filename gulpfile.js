@@ -26,6 +26,7 @@ gulp.task('nw', function () {
 	nw.build().then(function (res) {
 		_.each(res._platforms, function(platform) {
 			gulp.src('./templates/*').pipe(gulp.dest(platform.releasePath + "/templates"));
+			gulp.src('./lang/*').pipe(gulp.dest(platform.releasePath + "/lang"));
 		});		
 	   	console.log('Собрал, епта!');
 	}).catch(function (error) {
