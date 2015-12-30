@@ -1,0 +1,12 @@
+{
+    name: 'garage',
+    sources: {
+        background: "some_pic.jpg"
+    },
+    steps: [
+        {
+            step: 1,
+            type: 1
+        }
+    ]
+}

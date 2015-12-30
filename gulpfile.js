@@ -1,5 +1,6 @@
 var gulp = require('gulp');
 var builder = require('nw-builder');
+var _ = require('underscore');
 // var del = require('del');
 
 gulp.task('nw', function () {
@@ -20,17 +21,16 @@ gulp.task('nw', function () {
 	    buildDir: 'build'
 	});
 
-	nw.on('log',  console.log);
+	// nw.on('log',  console.log);
 
-	nw.build().then(function () {
-	   console.log('Собрал, епта!');
+	nw.build().then(function (res) {
+		_.each(res._platforms, function(platform) {
+			gulp.src('./templates/*').pipe(gulp.dest(platform.releasePath + "/templates"));
+		});		
+	   	console.log('Собрал, епта!');
 	}).catch(function (error) {
 	    console.error(error);
 	});
 });
-
-// gulp.task('clean', function() {
-// 	del('../build', {force: true})
-// });
 
 gulp.task('default', ['nw']);
