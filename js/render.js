@@ -35,60 +35,64 @@ var render = function () {
         self.create_button({
             name: "btn1",
             text_str: "Button",
-            x: 10,
-            y: 30,
-            w: 150,
-            h: 35,
-            size: 25,
+            sprite_path: 'btn1.png',
+            pic_size: 15,
+            size: 55,
             font: "Times New Roman",
             color: "green",
             stroke: "black",
             obj: circle1,
             click_event: function () {
-                this.event_obj.x += 50;
-                this.event_obj.y += 50;
+                console.log('click');
+                // this.event_obj.x += 50;
+                // this.event_obj.y += 50;
             }
         });
 
-        self.create_button({
-            name: "btn2",
-            text_str: "Test",
-            x: 10,
-            y: 70,
-            w: 200,
-            h: 35,
-            size: 25,
-            font: "Times New Roman",
-            color: "green",
-            stroke: "black",
-            // obj: circle1,
-            click_event: function () {
-                // el = self.stage.getChildByName('1');
-                // el.x += 10;
-                // console.log();
-                console.log(self.stage.getNumChildren());
-                self.stage.clear();
-            }
-        });
+        // self.create_button({
+        //     name: "btn2",
+        //     text_str: "Test",
+        //     x: 10,
+        //     y: 70,
+        //     w: 200,
+        //     h: 35,
+        //     size: 25,
+        //     font: "Times New Roman",
+        //     color: "green",
+        //     stroke: "black",
+        //     // obj: circle1,
+        //     click_event: function () {
+        //         // el = self.stage.getChildByName('1');
+        //         // el.x += 10;
+        //         // console.log();
+        //         console.log(self.stage.getNumChildren());
+        //         self.stage.clear();
+        //     }
+        // });
 
-        var data = {
-            images: ["btn.png"],
-            framerate: 1,
-            frames: {width:32*15, height:32*15},
-            animations: {
-                out: 0,
-                over: 1,
-                down: 2,
-                hit: 0
-            }
-        };
-        var spriteSheet = new createjs.SpriteSheet(data);
-        var Sprite = new createjs.Sprite(spriteSheet);
+        // var data = {
+        //     images: ["btn1.png"],
+        //     framerate: 1,
+        //     frames: {width:32*15, height:32*15},
+        //     animations: {
+        //         out: 0,
+        //         down: 2,
+        //     }
+        // };
+        // var spriteSheet = new createjs.SpriteSheet(data);
+        // var Sprite = new createjs.Sprite(spriteSheet);
+        // Sprite.x = 150;
+        // Sprite.y = 150;
+        // var btn_text = new createjs.Text('text', "50px Arial", "#000");
+        // btn_text.textAlign = "center";
+        // btn_text.x = 300;
+        // btn_text.y = 350;
 
-        var helper = new createjs.ButtonHelper(Sprite, "out", "over", "down", false, Sprite, "hit");
+        // var helper = new createjs.ButtonHelper(Sprite);
         // var animation = new createjs.Sprite(spriteSheet, "gen");
         // 
-        self.stage.addChild(Sprite);
+        // self.stage.addChild(Sprite);
+        // self.stage.addChild(btn_text);
         // self.stage.addChild(helper);
 
 
@@ -123,34 +127,38 @@ var render = function () {
     };
 
     self.create_button = function (button) {
-        // text_str, x, y, w, h, font, size, color, stroke, obj, click_event
+        // text_str, sprite_path, pic_size, font, size, color, stroke, obj, click_event
         var new_btn = new createjs.Container();
-        new_btn.name = button.text_str;
+        new_btn.name = button.name;
         new_btn.type = 'btn';
 
-        var background = new createjs.Shape();
-        background.graphics.beginFill(button.color).drawRect(button.x, button.y, button.w, button.h);
-        background.type="bgrnd";
-
+        var data = {
+            images: [button.sprite_path],
+            framerate: 1,
+            frames: {width:32*button.pic_size, height:32*button.pic_size},
+            animations: {
+                out: 0,
+                down: 1,
+            }
+        };
+        var spriteSheet = new createjs.SpriteSheet(data);
+        var Sprite = new createjs.Sprite(spriteSheet);
+        console.log(Sprite);
         var font_settings = button.size + "px " + button.font;
         var text = new createjs.Text(button.text_str, font_settings, "#000");
         text.textAlign = "center";
-        text.x = button.x+button.w/2;
-        text.y = button.y+(button.h/2) - (button.size/2);
-        text.type="txt";
+        // text.x = 32*button.pic_size;
+        // text.y = 32*button.pic_size;
 
-        var glass = new createjs.Shape();
-        glass.graphics.beginFill('rgba(0,0,0,0.1)')
-            .beginStroke(button.stroke)
-            .drawRect(button.x, button.y, button.w, button.h);
-        glass.name = button.name;
-        glass.type = 'btn';
-        glass.click_event = button.click_event;
-        glass.event_obj = button.obj;
+        new_btn.event_obj = button.obj;
 
-        new_btn.addChild(background);
+        new_btn.addChild(Sprite);
         new_btn.addChild(text);
-        new_btn.addChild(glass);
+
+        // new_btn.x = 100;
+        // new_btn.y = 100;
+        var helper = new createjs.ButtonHelper(Sprite, "out", "over", "down", false, new_btn);
+        new_btn.addEventListener("click", button.click_event);
 
         self.stage.addChild(new_btn);
         self.system_gui.push(new_btn);
